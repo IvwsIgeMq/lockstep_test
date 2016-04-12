@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="71" height="40" tilewidth="32" tileheight="32" nextobjectid="84">
+ <tileset firstgid="1" name="Tile01" tilewidth="32" tileheight="32">
+  <image source="Tile01.PNG" width="640" height="896"/>
+ </tileset>
+ <objectgroup name="floor">
+  <object id="56" x="0" y="1184" width="2272" height="96"/>
+  <object id="62" x="704" y="896" width="1184" height="64"/>
+  <object id="63" x="0" y="704" width="640" height="64"/>
+  <object id="65" x="832" y="608" width="704" height="64"/>
+  <object id="66" x="1984" y="1120" width="288" height="64"/>
+  <object id="67" x="2176" y="992" width="96" height="128"/>
+  <object id="69" x="2080" y="1056" width="96" height="64"/>
+  <object id="77" x="0" y="352" width="608" height="64"/>
+  <object id="78" x="1568" y="416" width="704" height="64"/>
+  <object id="79" x="736" y="288" width="704" height="64"/>
+  <object id="81" x="2272.73" y="-15.1515">
+   <polyline points="0,0 0,1330.3"/>
+  </object>
+  <object id="83" x="-5" y="-160">
+   <polyline points="0,0 5,1590"/>
+  </object>
+ </objectgroup>
+ <layer name="floor" width="71" height="40">
+  <data encoding="base64" compression="zlib">
+   eJzt1ksKgDAMBUCvUbz/PV0LFtyk+TADby9tzcu6+LKyPwAAoJkVlAnuoJziPvc63if/mWt73ecawCm6ZE+XzOKN73njAHNF7XoTOjRq19OhVFTxH6zC2bxVn92ZnM1bp84/LXvXkrnJ3lUr5wGKjDXq
+  </data>
+ </layer>
+ <objectgroup name="monster">
+  <object id="24" x="288" y="32" width="64" height="64"/>
+  <object id="26" x="2144" y="32" width="64" height="64"/>
+  <object id="27" x="2169.3" y="846.731" width="64" height="64"/>
+  <object id="80" x="1123.87" y="482.08" width="64" height="64"/>
+ </objectgroup>
+ <objectgroup name="start">
+  <object id="28" x="788.935" y="1014.7" width="64" height="64"/>
+ </objectgroup>
+ <objectgroup name="food">
+  <object id="29" x="256" y="288" width="64" height="64"/>
+  <object id="30" x="1179.87" y="816.43" width="64" height="64"/>
+ </objectgroup>
+</map>
