@@ -42,6 +42,7 @@ function GameView:ctor(tcp)
     self.heroList = {}
     self.sendCommand = {}
     self.serverFrameKeyLIst = {}
+    self.viewFrameKeyList = {}
     self.interval= 0
     self.keyLen = 0
 end
@@ -62,7 +63,7 @@ function GameView:updateLogic (world,forwardTime,logic_frame)
    for k,monster in pairs(self.monsters) do
       monster:logicUpdate(forwardTime)
    end
-   self:sendCommands(logic_frame)
+
 end
 
 function GameView:viewUpdate (dt,world,forwardTime)
@@ -79,8 +80,10 @@ function GameView:viewUpdate (dt,world,forwardTime)
          else
             self.interval  = 0
          end
-
+         table.insert(self.viewFrameKeyList,key)
       end
+      self:sendCommands()
+
    end
    self.interval  = self.interval +dt
 end

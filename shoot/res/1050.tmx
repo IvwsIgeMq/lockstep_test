@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="28" tilewidth="32" tileheight="32" nextobjectid="46">
+ <properties>
+  <property name="far" value="0"/>
+  <property name="mid" value="0"/>
+  <property name="type" value="0"/>
+ </properties>
+ <tileset firstgid="1" name="1031-1" tilewidth="32" tileheight="32">
+  <image source="1031-1.jpg" width="1024" height="1024"/>
+ </tileset>
+ <tileset firstgid="1025" name="1031-2" tilewidth="32" tileheight="32">
+  <image source="1031-2.jpg" width="1024" height="896"/>
+ </tileset>
+ <layer name="bg2" width="50" height="28">
+  <data encoding="base64" compression="zlib">
+   eJzN1ldSFmkAhlGQnMEdkHPcATnHHZBz3AFmJbMDQcGcdmAGs+4ATEhSWIFnauZybqacKvqrOvfv091/9x8ScrInNDwk5BRhhBNBJFFEE0MsccSTQCJJJJPC04gTjnBS7UgjnQwyySKbHHLJI58CCimimBJKA9JRbkcFlVRRTQ211FFPA4000UwLrbTRTkf4SVeEhHTa0EU3PfTSRz8DDDLEMCOMMsY4E0wyFYCOaRvOcJZznOcCF7nEZa4wwyxzzLPAIkssB6Djqg0rrHKN66yxzg1ucovb3OEu97jPAx7yKAAdj2148tdvlWc85wUv2WCTV7zmDW95x3s+8JFPAejYsmGbz3zhK9/4zg4/2GWPfQ445Ce/OOI4AB2h3pmnCCOcCCKJIpoYYokjngQSSSKZFE4H4L2bakMa6WSQSRbZ5JBLHvkUUEgRxZRQSlkAOsptqKCSKqqpoZY66mmgkSaaaaGVNtrpCEBHpw1ddNNDL330M8AgQwwzwihjjDPBJFMB6Ji24QxnOcd5LnCRS1zmCjPMMsc8CyyyxHIAOq7asMIq17jOGuvc4Ca3uM0d7nKP+zzgIY8C0PHYhicRf//Xe8ZzXvCSDTZ5xWve8JZ3vOcDH/n0HzpKIv/dn54tG7b5zBe+8o3v7PCDXfbY54BDfvKLI44DcD9CXYtThBFOBJFEEU0MscQRTwKJJJFMCqf/h+v5pyfVhjTSySCTLLLJIZc88imgkCKK/3keSikLQEe5DRVUUkU1NdRSRz0NNNJEMy200kY7HQHo6LShi2566KWPfgYYZIhhRhhljHEmmGQqAB3TNpzhLOc4zwUuconLXGGGWeaYZ4FFllgOQMdVG1ZY5RrXWWOdG9zkFre5w13ucZ8HPORRADoe2/CEpzzjOS94yQabvOI1b3jLO97zgY98CkDHlg3bfOYLX/nGd3b4wS577HPAIT/5xRHHAegIjfL9IIxwIogkimhiiCWOeBJIJIlkUjgdddIVvh82pJFOBplkkU0OueSRTwGFFFFMCaWUBaCj3IYKKqmimhpqqaOeBhppopkWWmmjnY4AdHTa0EU3PfTSRz8DDDLEMCOMMsY4E0wyxW/1keol
+  </data>
+ </layer>
+ <layer name="bg1" width="50" height="28">
+  <data encoding="base64" compression="zlib">
+   eJytz/MXkAcYhuG4allr2S2vlhe37Ja3sC1bW8u2bdu2bdu2be3qf/jec65fn/fc3UKECNGdHvSkF73pQ1/60Z8BDGQQgxnCUIYxnBGMZBSjGcNYxjGeCUxkEpOZwtQQwd00pjODmcxiNnOYyzzms4CFLGIxS1jKMpazgpWsYjVrWMs61rOBjWxiM1vYGmDHNrazg53sYjd72Ms+9nOAgxziMEc4yjGOc4KTnOI0ZzjLOc5zgYtc4jJXuBpgxzWuc4Ob3OI2d7jLPe7zgIc84jFPeMoznvOCl7ziNW94yzve84GPfOIzX74+DxlcR0hboQhNGMLyDeEITwS+JSKRiEwUohKN6MQgJrGIzXfE4XviEo/4JCAhiUhMkgA7ktpKRnJSkJJU/EBq0pCWdKQnAxn5kUxk5ieykJVsZCcHOcnFz+QmD3nJR34KBNjxi61fKUghClOEohSjOCUoSSlKU4aylOM3ylOBilSiMlWoyu/8QTWqU4Oa/MlfAXb8basWtalDXepRnwY0pBGNaUJTmtGcFrSkFf/wL635jza0pR3t6UBHOtGZLnQNsKObre70oCe96E0f+tKP/gxgIIMYzBCGMozhjGAkoxjNGMYyjvFMYCKTmMwUpgbYMc3WdGYwk1nMZg5zmcd8FrCQRSxmCUtZxnJWsJJVrGYNa1nHejawkU1sZgtbA+zYZms7O9jJLnazh73sYz8HOMghDnOEoxzjOCc4ySlOc4aznOM8F7jIJS5zhasBdlyzdZ0b3OQWt7nDXe5xnwc85BGPecJTnvGcF7zkFa95w1ve8Z4PfOQTn/nytSFUcB0hbYUiNGEIyzeEIzwR+JaIRCIyUYhKNKITg5jEIjbfEYfviUs84pOAhCQiMUkC7EhqKxnJSUFKUvEDqUlDWtKRngxk5EcykZmfyEJWspGdHOQkFz+TmzzkJR/5KRBgxy+2fqUghShMEYpSjOKUoCSlKE0ZylKO3yhPBSpSicpUoSq/8wfVqE4NavInfwXY8betWtSmDnWpR30a0JBGNKYJTWlGc1rQklb8w7+05j/a0JZ2tKcDHelEZ7rQNcCObra604Oe9KI3fehLP/ozgIEMYjBDGMowhjOCkYxiNGMYyzjGM4GJTGIyU5gaYMc0W9OZwUxmMZs5zGUe81nAQhaxmCUsZRnLWcFKVrGaNaxlHevZwEY2sZktbA2wY5ut7exgJ7vYzR72so/9HOAghzjMEY5yjOOc4CSnOM0ZznKO81zgIpe4zBWuBthxzdZ1bnCTW9zmDne5x30e8JBHPOYJT3nGc17wkle85g1vecd7PvCRT3zmy9eG0MF1hLQVitCEISzfEI7wROBbIhKJyEQhKtGITgxiEovYfEccvicu8YhPAhKSiMQkCbAjqa1kJCcFKUnFD6QmDWlJR3oykJEfyURmfiILWclGdnKQk1z8TG7ykJd85KdAgB2/2PqVghSiMEUoSjGKU4KSlKI0ZShLOX6jPBWoSCUqU4Wq/M4fVKM6NajJn/wVYMfftmpRmzrUpR71aUBDGtGYJjSlGc1pQUta8Q//0pr/aENb2tGeDnSkE53pQtcAO7rZ6k4PetKL3vShL/3ozwAGMojBDGEowxjOCEYyitGMYSzjGM8EJjKJyUxhaoAd02xNZwYzmcVs5jCXecxnAQtZxGKWsJRlLGcFK1nFatawlnWsZwMb2cRmtrA1wI5ttrazg53sYjd72Ms+9nOAgxziMEc4yjGOc4KTnOI0ZzjLOc5zgYtc4jJXuBpgxzVb17nBTW5xmzvc5R73ecBDHvGYJzzlGc95wUte8Zo3vOUd7/nARz7xmS9fG8IE1/E/+ivj1A==
+  </data>
+ </layer>
+ <objectgroup name="floor">
+  <object id="1" name="floor" type="2" x="7.5" y="0">
+   <properties>
+    <property name="points" value="0,0#0,28"/>
+    <property name="subtype" value="2"/>
+   </properties>
+   <polyline points="0,0 4,888"/>
+  </object>
+  <object id="2" name="floor" type="2" x="6" y="0">
+   <properties>
+    <property name="points" value="0,0#66,0"/>
+    <property name="subtype" value="3"/>
+   </properties>
+   <polyline points="0,0 1592.5,-1"/>
+  </object>
+  <object id="3" name="floor" type="2" x="1587.5" y="1.25">
+   <properties>
+    <property name="points" value="66,0#66,28"/>
+    <property name="subtype" value="2"/>
+   </properties>
+   <polyline points="0,0 0,892"/>
+  </object>
+  <object id="4" name="floor" type="2" x="4" y="681">
+   <properties>
+    <property name="points" value="0,21.2#50,21.2"/>
+    <property name="subtype" value="1"/>
+   </properties>
+   <polyline points="0,0 1592,-5"/>
+  </object>
+  <object id="11" name="floor" type="2" x="1598" y="677">
+   <properties>
+    <property name="points" value="50,21.3#50.5,28"/>
+    <property name="subtype" value="2"/>
+   </properties>
+   <polyline points="0,0 1,218"/>
+  </object>
+  <object id="41" name="floor" type="2" x="197.745" y="310.777">
+   <polyline points="0,0 150.351,1.63425"/>
+  </object>
+  <object id="42" name="floor" type="2" x="346.462" y="500.253">
+   <polyline points="0,0 147.083,1.63425"/>
+  </object>
+  <object id="43" name="floor" type="2" x="647.165" y="421.809">
+   <polyline points="0,0 106.227,1.63425"/>
+  </object>
+  <object id="44" name="floor" type="2" x="841.641" y="362.804">
+   <polyline points="0,0 155.254,0"/>
+  </object>
+  <object id="45" name="floor" type="2" x="960.941" y="507.521">
+   <polyline points="0,0 153.62,3.26851"/>
+  </object>
+ </objectgroup>
+ <objectgroup name="monster" visible="0">
+  <object id="13" name="monster" type="100" x="599" y="419">
+   <properties>
+    <property name="grids" value="0,7"/>
+    <property name="mid" value="1"/>
+    <property name="scrolltype" value="1"/>
+   </properties>
+   <polyline points="0,0 0,259"/>
+  </object>
+  <object id="14" name="monster" type="100" x="824" y="417">
+   <properties>
+    <property name="grids" value="0,7"/>
+    <property name="mid" value="2"/>
+    <property name="scrolltype" value="1"/>
+   </properties>
+   <polyline points="0,0 0,259"/>
+  </object>
+  <object id="15" name="monster" type="100" x="1047" y="416">
+   <properties>
+    <property name="grids" value="0,7"/>
+    <property name="mid" value="3"/>
+    <property name="scrolltype" value="1"/>
+   </properties>
+   <polyline points="0,0 0,259"/>
+  </object>
+ </objectgroup>
+ <objectgroup name="player" visible="0">
+  <object id="16" name="player" type="0" x="293" y="546" width="64" height="64">
+   <properties>
+    <property name="left" value="2"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="goods" visible="0">
+  <object id="19" name="box" type="212" x="421" y="393" width="64" height="64">
+   <properties>
+    <property name="bheight" value="35"/>
+    <property name="block" value="2"/>
+    <property name="bwidth" value="50"/>
+    <property name="bx" value="0"/>
+    <property name="by" value="0"/>
+    <property name="chipId" value="1001"/>
+    <property name="goodsId" value="101401"/>
+    <property name="life" value="500"/>
+    <property name="skinName" value="th_box1"/>
+   </properties>
+  </object>
+  <object id="20" name="box" type="212" x="921" y="259" width="64" height="64">
+   <properties>
+    <property name="bheight" value="35"/>
+    <property name="block" value="2"/>
+    <property name="bwidth" value="50"/>
+    <property name="bx" value="0"/>
+    <property name="by" value="0"/>
+    <property name="chipId" value="1001"/>
+    <property name="goodsId" value="0"/>
+    <property name="life" value="500"/>
+    <property name="skinName" value="th_box1"/>
+   </properties>
+  </object>
+  <object id="21" name="box" type="212" x="848" y="581" width="64" height="64">
+   <properties>
+    <property name="bheight" value="35"/>
+    <property name="block" value="2"/>
+    <property name="bwidth" value="50"/>
+    <property name="bx" value="0"/>
+    <property name="by" value="0"/>
+    <property name="chipId" value="1001"/>
+    <property name="goodsId" value="0"/>
+    <property name="life" value="500"/>
+    <property name="skinName" value="th_box1"/>
+   </properties>
+  </object>
+  <object id="22" name="box" type="212" x="742" y="581" width="64" height="64">
+   <properties>
+    <property name="bheight" value="35"/>
+    <property name="block" value="2"/>
+    <property name="bwidth" value="50"/>
+    <property name="bx" value="0"/>
+    <property name="by" value="0"/>
+    <property name="chipId" value="1001"/>
+    <property name="goodsId" value="0"/>
+    <property name="life" value="500"/>
+    <property name="skinName" value="th_box1"/>
+   </properties>
+  </object>
+  <object id="23" name="box" type="212" x="1039" y="402" width="64" height="64">
+   <properties>
+    <property name="bheight" value="35"/>
+    <property name="block" value="2"/>
+    <property name="bwidth" value="50"/>
+    <property name="bx" value="0"/>
+    <property name="by" value="0"/>
+    <property name="chipId" value="1001"/>
+    <property name="goodsId" value="101101"/>
+    <property name="life" value="500"/>
+    <property name="skinName" value="th_box1"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
