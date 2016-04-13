@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "socketevent_pop(link*):socketevent.c">
+      </ContextState>
+      <ContextState
+         contextName = "socketevent_tcp_trigger_message(lua_SocketEventTCP*, lua_State*):socketevent.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "sock-&gt;mssage_link">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "socketevent_update(lua_State*):socketevent.c">
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
