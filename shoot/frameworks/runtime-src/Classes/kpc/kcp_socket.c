@@ -84,15 +84,14 @@ void work_thread_win(void *psock) {
 
 void* work_thread(void * p)
 {
-    
+
     KCP* pkcp = (KCP*)p;
     socklen_t buff_len = 1024;
     char* buff = (char*)malloc(buff_len);
-    
+
     while (1) {
-        
+
         ikcp_update(pkcp->kcp, iclock());
-        
         while (pkcp->send_link->node_count) {
             M_Node* send_node = link_pop(pkcp->send_link);
             ikcp_send(pkcp->kcp, send_node->data_buffer, send_node->data_buffer_use);
@@ -121,28 +120,33 @@ void* work_thread(void * p)
 
 void* server_thread(void * p)
 {
-    
+
     KCP_Server* kcp_s = (KCP_Server*)p;
     socklen_t buff_len = 1024;
     char* buff = (char*)malloc(buff_len);
-    
+
     while (1) {
-        
-        
+        isleep(1);
+        IUINT32 t = iclock();
+        IUINT32 t_update = 0;
         while (kcp_s->kcp_link->node_count) {
             M_Node* kcp_node = link_pop(kcp_s->kcp_link);
             KCP* pkcp  = (KCP*)kcp_node->data_buffer;
-            ikcp_update(pkcp->kcp, iclock());
+             t_update = ikcp_check(pkcp, t);
+            if (t>= t_update) {
+                ikcp_update(pkcp->kcp, t);
+            }
             link_push(kcp_s->kcp_link, kcp_node);
         }
-        
-        
-        while (kcp_s->recv_kcp_link->node_count) {
-              M_Node* kcp_node = link_pop(kcp_s->recv_kcp_link);
+
+
+        while (kcp_s->send_kcp_link->node_count) {
+              M_Node* kcp_node = link_pop(kcp_s->send_kcp_link);
               KCP* pkcp  = (KCP*)kcp_node->data_buffer;
               while (pkcp->send_link->node_count) {
                   M_Node* send_node = link_pop(pkcp->send_link);
                   ikcp_send(pkcp->kcp, send_node->data_buffer, send_node->data_buffer_use);
+                  ikcp_update(pkcp->kcp,t);
               }
               link_push(kcp_s->free_kcp_link, kcp_node);
         }
@@ -156,6 +160,7 @@ void* server_thread(void * p)
             if (kcp_s->kcp_array[kcp_fd]) {
                 KCP* pkcp =kcp_s->kcp_array[kcp_fd];
                 ikcp_input(pkcp->kcp, buff , recv_len);
+                ikcp_update(pkcp->kcp,t);
                 M_Node* node = NULL;
                 if (kcp_s->free_kcp_link->node_count>0) {
                     node = link_pop(kcp_s->free_kcp_link);
@@ -174,6 +179,7 @@ void* server_thread(void * p)
                 }
                 KCP * pkcp =(KCP*)create_kcp_client(fd);
                 pkcp->kcp_server = kcp_s;
+                pkcp->fd = kcp_s->fd;
                 ikcp_create(fd, pkcp);
             }
         }
@@ -228,19 +234,19 @@ void * create_kcp_server(unsigned int maxClient)
     kcp_s->recv_kcp_link = link_new();
     kcp_s->free_kcp_link = link_new(0);
     kcp_s->kcp_link = link_new(0);
-    
+
     return kcp_s;
 }
 
 int kcp_connect(void * netObject,const char* ip, unsigned int port){
-    
+
     KCP* pkcp = (KCP*)netObject;
     pkcp->addr.sin_family = AF_INET;
     pkcp->addr.sin_addr.s_addr = inet_addr(ip);
     pkcp->addr.sin_port = htons(port);
     memset((void*)pkcp->addr.sin_zero, 0, sizeof(pkcp->addr.sin_zero));
-    
-    
+
+
 #if defined(_WIN32)
         WSADATA wsa;
         // WinSock Startup
@@ -248,7 +254,7 @@ int kcp_connect(void * netObject,const char* ip, unsigned int port){
             return 0;
         }
 #endif
-    
+
         if (-1 == inet_addr(ip)) {
             struct hostent *hostinfo;
             if ((hostinfo = (struct hostent*)gethostbyname(ip)) == NULL) {
@@ -268,10 +274,10 @@ int kcp_connect(void * netObject,const char* ip, unsigned int port){
                 return 0;
             }
         } else {
-         
+
         }
 
-        
+
         // create socket
         if ((pkcp->fd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
             return 0;
@@ -295,22 +301,28 @@ int kcp_connect(void * netObject,const char* ip, unsigned int port){
 
 int kcp_listen(void * netObject, unsigned int port )
 {
-    KCP* pkcp = (KCP* )netObject;
-    pkcp->fd =socket(AF_INET,SOCK_DGRAM,0);
-    pkcp->addr.sin_family=AF_INET;
-    pkcp->addr.sin_port=port;
-    bind(pkcp->fd ,(struct sockaddr *)&pkcp->addr,sizeof(struct sockaddr));
+    KCP_Server* kcp_s = (KCP_Server* )netObject;
+    kcp_s->fd =socket(AF_INET,SOCK_DGRAM,0);
+    kcp_s->addr.sin_family=AF_INET;
+    kcp_s->addr.sin_port=port;
+    bind(kcp_s->fd ,(struct sockaddr *)&kcp_s->addr,sizeof(struct sockaddr));
+    
+
+    int retval = pthread_create(&pkcp->thread, NULL, server_thread, kcp_s);
+    if (retval != 0) {
+        return 0;
+    }
     return 0 ;
 }
 
 
 int kcp_send(void * netObject, const char* buff, unsigned int len){
-    
+
     KCP* pkcp = (KCP*)netObject;
     M_Node* send_node = link_new_node(len);
     link_append_to_node(send_node, buff, len);
     link_push(pkcp->send_link, send_node);
-    
+
     if (pkcp->kcp_server) {
         KCP_Server* kcp_s = (KCP_Server*)pkcp->kcp_server;
         M_Node* node = NULL;
@@ -331,6 +343,5 @@ M_Node* kcp_recv(void * netObject){
     return NULL;
 }
 int kcp_close(void * netObject){
-    
-}
 
+}
