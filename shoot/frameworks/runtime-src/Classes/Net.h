@@ -25,8 +25,9 @@ extern "C" {
 
 #include "thread_safe_link.h"
 #include "tcp.h"
+#include "kcp_socket.h"
 //extern "C++"{
-    #include "udt.h"
+//    #include "udt.h"
 //}
 
 

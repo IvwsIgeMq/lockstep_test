@@ -4,7 +4,7 @@ local Net = require("Net")
 local json = require("json")
 function tcp:ctor()
     StartNodeTimer(self, function () self:update() end, 0.0)
-    self.sock = Net.Net("tcp")
+    self.sock = Net.Net("kcp")
     self.onMessage = function () end
     self.rtt  = 0
 end
@@ -13,13 +13,13 @@ end
 function tcp:connect (args)
    print("create tcp","218.107.220.124", 8010)
    -- self.sock:connect("218.107.220.124", 8014)
-   self.sock:connect("192.168.3.127",8010)
+   self.sock:connect("192.168.3.131",8010)
 end
 
 function tcp:update(dt)
    local data =self.sock:recv()
    while data  do
-      -- print("data",data)
+       print("data",data)
       if data == 'connected' then
          local str = json.encode({type=0})
          self.sock:send(str)

@@ -39,7 +39,6 @@
 		045CC6DE1CB6A1B10061B384 /* Net.c in Sources */ = {isa = PBXBuildFile; fileRef = 045CC6D91CB6A1B10061B384 /* Net.c */; };
 		045CC6DF1CB6A1B10061B384 /* thread_safe_link.c in Sources */ = {isa = PBXBuildFile; fileRef = 045CC6DB1CB6A1B10061B384 /* thread_safe_link.c */; };
 		045CC6E01CB6A1B10061B384 /* thread_safe_link.c in Sources */ = {isa = PBXBuildFile; fileRef = 045CC6DB1CB6A1B10061B384 /* thread_safe_link.c */; };
-		04EB89551CB804C0002ADB34 /* kcp_socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 04EB89531CB804C0002ADB34 /* kcp_socket.c */; };
 		04EB89581CB808BE002ADB34 /* tcp.c in Sources */ = {isa = PBXBuildFile; fileRef = 04EB89561CB808BE002ADB34 /* tcp.c */; };
 		04EB89591CB808BE002ADB34 /* tcp.c in Sources */ = {isa = PBXBuildFile; fileRef = 04EB89561CB808BE002ADB34 /* tcp.c */; };
 		15427CD3198F221400DC375D /* libcocos2d iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15A8A4251834BDA200142BE0 /* libcocos2d iOS.a */; };
@@ -114,6 +113,8 @@
 		F641BC821C9A4F4F00EF7F7E /* libpbc Mac.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F641BC811C9A4F0E00EF7F7E /* libpbc Mac.a */; };
 		F641BC831C9A4FD200EF7F7E /* libpbc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F641BC7F1C9A4F0E00EF7F7E /* libpbc.a */; };
 		F641BC911C9A54C500EF7F7E /* libluacocos2d iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F69274E31C9967CA0020BE58 /* libluacocos2d iOS.a */; };
+		F6F21FCE1CBF6D0900FF476F /* kcp_socket.c in Sources */ = {isa = PBXBuildFile; fileRef = F6F21FCC1CBF6D0900FF476F /* kcp_socket.c */; };
+		F6F21FCF1CBF6D0900FF476F /* kcp_socket.c in Sources */ = {isa = PBXBuildFile; fileRef = F6F21FCC1CBF6D0900FF476F /* kcp_socket.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -251,8 +252,6 @@
 		045CC6DA1CB6A1B10061B384 /* Net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Net.h; path = ../Classes/Net.h; sourceTree = "<group>"; };
 		045CC6DB1CB6A1B10061B384 /* thread_safe_link.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = thread_safe_link.c; path = ../Classes/thread_safe_link.c; sourceTree = "<group>"; };
 		045CC6DC1CB6A1B10061B384 /* thread_safe_link.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = thread_safe_link.h; path = ../Classes/thread_safe_link.h; sourceTree = "<group>"; };
-		04EB89531CB804C0002ADB34 /* kcp_socket.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kcp_socket.c; path = ../Classes/kpc/kcp_socket.c; sourceTree = "<group>"; };
-		04EB89541CB804C0002ADB34 /* kcp_socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kcp_socket.h; path = ../Classes/kpc/kcp_socket.h; sourceTree = "<group>"; };
 		04EB89561CB808BE002ADB34 /* tcp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcp.c; path = ../Classes/LuaSocketEvent/tcp.c; sourceTree = "<group>"; };
 		04EB89571CB808BE002ADB34 /* tcp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcp.h; path = ../Classes/LuaSocketEvent/tcp.h; sourceTree = "<group>"; };
 		15427CE2198F237300DC375D /* lua_module_register.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lua_module_register.h; path = ../Classes/lua_module_register.h; sourceTree = "<group>"; };
@@ -332,6 +331,8 @@
 		F293BB7E15EB831F00256477 /* AppDelegate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AppDelegate.cpp; path = ../Classes/AppDelegate.cpp; sourceTree = "<group>"; };
 		F293BB7F15EB831F00256477 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ../Classes/AppDelegate.h; sourceTree = "<group>"; };
 		F641BC791C9A4F0E00EF7F7E /* pbc.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = pbc.xcodeproj; path = "../Classes/pbc-master/pbc.xcodeproj"; sourceTree = "<group>"; };
+		F6F21FCC1CBF6D0900FF476F /* kcp_socket.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kcp_socket.c; path = ../Classes/kpc/kcp_socket.c; sourceTree = "<group>"; };
+		F6F21FCD1CBF6D0900FF476F /* kcp_socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kcp_socket.h; path = ../Classes/kpc/kcp_socket.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -386,8 +387,8 @@
 		045CC69C1CB6A15E0061B384 /* kcp */ = {
 			isa = PBXGroup;
 			children = (
-				04EB89531CB804C0002ADB34 /* kcp_socket.c */,
-				04EB89541CB804C0002ADB34 /* kcp_socket.h */,
+				F6F21FCC1CBF6D0900FF476F /* kcp_socket.c */,
+				F6F21FCD1CBF6D0900FF476F /* kcp_socket.h */,
 				045CC6D81CB6A1A10061B384 /* ikcp.h */,
 				045CC6D51CB6A1960061B384 /* ikcp.c */,
 			);
@@ -852,6 +853,7 @@
 				04EB89591CB808BE002ADB34 /* tcp.c in Sources */,
 				C07828FA18B4D72E00BD2287 /* SimulatorApp.mm in Sources */,
 				045CC6D41CB6A1880061B384 /* window.cpp in Sources */,
+				F6F21FCF1CBF6D0900FF476F /* kcp_socket.c in Sources */,
 				045CC6D71CB6A1960061B384 /* ikcp.c in Sources */,
 				9FFE00A01ACCF59E00D6E35A /* lua_debugger.c in Sources */,
 				045CC6E01CB6A1B10061B384 /* thread_safe_link.c in Sources */,
@@ -880,7 +882,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				045CC6C11CB6A1880061B384 /* ccc.cpp in Sources */,
-				04EB89551CB804C0002ADB34 /* kcp_socket.c in Sources */,
+				F6F21FCE1CBF6D0900FF476F /* kcp_socket.c in Sources */,
 				045CC6C71CB6A1880061B384 /* core.cpp in Sources */,
 				045CC6C91CB6A1880061B384 /* epoll.cpp in Sources */,
 				045CC6D31CB6A1880061B384 /* window.cpp in Sources */,

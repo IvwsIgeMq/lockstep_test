@@ -33,7 +33,7 @@ typedef struct link{
 }Link;
 
 
-Link* link_new(int useLock = 1);
+Link* link_new(int useLock);
 
 void  link_lock(Link* link);
 void  link_unlock(Link* link);

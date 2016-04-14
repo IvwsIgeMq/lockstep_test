@@ -56,12 +56,12 @@ void socketevent_tcp_data_win(void *psock);
     sock->data_buffer_use = 0;
     sock->data_buffer = (char *)malloc(sock->data_buffer_size + 1);
     memset(sock->data_buffer, 0, sock->data_buffer_size + 1);
-    sock->data_link = link_new();
+    sock->data_link = link_new(1);
 
 	// message buffer
-    sock->mssage_link =link_new();
+    sock->mssage_link =link_new(1);
 
-    sock->free_link = link_new();
+    sock->free_link = link_new(1);
     sock->temp_node = NULL;
 
 	return sock;

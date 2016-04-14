@@ -66,7 +66,11 @@ static int l_net_Net(lua_State* L)
     }else if (strcmp(type , "udt")== 0 ) {
     
     }else if (strcmp(type, "kcp")==0){
-        
+        pNet->netObject = kcp_create_client(0);
+        pNet->connect = kcp_connect;
+        pNet->send = kcp_send;
+        pNet->recv = kcp_recv;
+        pNet->close = kcp_close;
     }else{
         luaL_error(L, "没有指定联接类型 %s",type);
         return 0;

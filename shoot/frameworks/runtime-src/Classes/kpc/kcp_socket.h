@@ -49,6 +49,7 @@ typedef struct {
     unsigned int kcp_array_len;
     unsigned int kcp_count;
     int fd;
+     pthread_t thread;
     struct sockaddr_in addr;
     Link* kcp_link;
     Link* send_kcp_link;
@@ -56,15 +57,15 @@ typedef struct {
     Link* free_kcp_link;
 }KCP_Server;
 
-void * create_kcp_client(unsigned int kcp_fd = 0);
-void * create_kcp_server(unsigned int maxClient);
+void * kcp_create_client(unsigned int kcp_fd);
+void * kcp_create_server(unsigned int maxClient);
 
 int kcp_connect(void * netObject,const char* ip, unsigned int port);
-int kcp_listen(void * netObject, unsigned int port );
+int kcp_listen(void * netObject, unsigned int port ,int createThread);
 int kcp_send(void * netObject, const char* buff, unsigned int len);
 M_Node* kcp_recv(void * netObject);
 int kcp_close(void * netObject);
-
+void* kcp_server_wroker(void * p);
 
 
 
