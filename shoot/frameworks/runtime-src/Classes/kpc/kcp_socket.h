@@ -17,7 +17,7 @@
 #include <process.h>
 #include <ws2tcpip.h>
 #else
-
+#include <fcntl.h>
 #include <sys/time.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -26,6 +26,14 @@
 #include <pthread.h>
 #endif
 #include <sys/socket.h>
+
+#define CONNECTING  1
+#define CONNECTED   1<<1
+#define SENDDATA    1<<2
+#define RECVDATA    1<<3
+#define KCPSEND     1<<4
+#define KCPRECV     1<<5
+
 
 
 //extern "C" {
@@ -41,6 +49,7 @@ typedef struct {
     Link* recv_link;
     Link* send_link;
     void * kcp_server;
+    int state ;
 }KCP;
 
 
@@ -49,7 +58,8 @@ typedef struct {
     unsigned int kcp_array_len;
     unsigned int kcp_count;
     int fd;
-     pthread_t thread;
+    int use_thread;
+    pthread_t thread;
     struct sockaddr_in addr;
     Link* kcp_link;
     Link* send_kcp_link;

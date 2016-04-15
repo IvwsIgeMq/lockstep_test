@@ -66,6 +66,8 @@ static int l_net_Net(lua_State* L)
     }else if (strcmp(type , "udt")== 0 ) {
     
     }else if (strcmp(type, "kcp")==0){
+//        void *kcp_s =kcp_create_server(10);
+//        kcp_listen(kcp_s, 8010, 1 );
         pNet->netObject = kcp_create_client(0);
         pNet->connect = kcp_connect;
         pNet->send = kcp_send;

@@ -26,6 +26,7 @@ typedef struct node{
 typedef struct link{
     M_Node* front;
     M_Node* rear;
+    M_Node* index;
     int node_count;
     int size;
     pthread_mutex_t mutex;
@@ -34,6 +35,7 @@ typedef struct link{
 
 
 Link* link_new(int useLock);
+
 
 void  link_lock(Link* link);
 void  link_unlock(Link* link);

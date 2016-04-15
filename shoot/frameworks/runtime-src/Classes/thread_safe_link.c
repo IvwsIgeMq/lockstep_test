@@ -12,12 +12,15 @@ Link* link_new(int useLock){
     Link* link = (Link*)malloc(sizeof(Link));
     link->front = NULL;
     link->rear = NULL;
+    link->index = NULL;
     link->node_count = 0;
     link->size = 0 ;
     link->useLock = useLock;
+    
     pthread_mutex_init(&link->mutex,NULL);
     return link;
 }
+
 
 void  link_lock(Link* link){
     if (link->useLock >0) {
