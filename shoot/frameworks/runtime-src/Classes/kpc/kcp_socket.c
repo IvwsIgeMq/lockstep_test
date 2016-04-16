@@ -16,17 +16,6 @@ void work_thread_win(void *psock);
 
 #endif
 
-#pragma pack(1)
-typedef struct msg_head{
-    char	 head;
-    short 	versions_id;//版本
-    short 	SN; //顺序号
-    int 	session_id;
-    int		len;
-    int 	msg_type;
-}Msg_Head;
-#pragma pack()
-
 /* get system time */
 static inline void itimeofday(long *sec, long *usec)
 {
@@ -94,6 +83,7 @@ void work_thread_win(void *psock) {
 #endif
 
 
+
 void* work_thread(void * p)
 {
     
@@ -104,7 +94,7 @@ void* work_thread(void * p)
     char* buff = (char*)malloc(buff_len);
     
     while (1) {
-        usleep(1000);
+//        usleep(1000);
         
         IUINT32 t = iclock();
         ikcp_update(pkcp->kcp, iclock());
@@ -144,8 +134,15 @@ void* work_thread(void * p)
             if (hr<0) {
                 break;
             }
+            if((pkcp->state & CONNECTED) == 0){
+                if (memcmp(buff, "server_connect",strlen("server_connect")) == 0 ) {
+                    pkcp->state |= CONNECTED;
+                    break;
+                }
+            }
             M_Node* recv_node = link_new_node(hr);
             link_append_to_node(recv_node, buff, hr);
+            link_push(pkcp->recv_link, recv_node);
         }
     }
     return NULL;
@@ -223,6 +220,7 @@ void* kcp_server_wroker(void * p)
                 printf("add client to recv recv_kcp_link  %d\n",kcp_fd);
                 link_append_to_node(node, (const char *)&pkcp, sizeof(KCP*));
                 link_push(kcp_s->recv_kcp_link, node);
+                pkcp->state |= KCPRECV;
             }
             
             ikcp_input(pkcp->kcp, buff , recv_len);
@@ -242,6 +240,7 @@ void* kcp_server_wroker(void * p)
                 link_append_to_node(recv_node, buff, hr);
                 link_push(pkcp->recv_link, recv_node);
             }
+            
             pkcp->state ^= KCPRECV;
             pkcp->state |= RECVDATA;
             kcp_node = kcp_node->next;
@@ -250,6 +249,7 @@ void* kcp_server_wroker(void * p)
             break;
         }
     }
+    free(buff);
     return NULL;
 }
 
@@ -258,11 +258,11 @@ void* kcp_server_wroker(void * p)
 int udp_output(const char *buf, int len, ikcpcb *kcp, void *user)
 {
     KCP* pkcp = (KCP*)user;
-    if(pkcp->kcp_server){
-        printf("server_send udp %d  \n ",len);
-    }else {
-        printf("client_send udp %d \n ",len);
-    }
+   //  if(pkcp->kcp_server){
+   //      printf("server_send udp %d  \n ",len);
+   //  }else {
+   //      printf("client_send udp %d \n ",len);
+   //  }
     sendto(pkcp->fd,buf,len,0, (const struct sockaddr*)&pkcp->addr, sizeof(struct sockaddr));
     return 0;
 }
@@ -276,6 +276,7 @@ void * kcp_create_client(unsigned int kcp_fd){
     pkcp->kcp_server = NULL;
     pkcp->send_link = link_new(1);
     pkcp->recv_link = link_new(1);
+    pkcp->state = 0;
     struct timeval tv_out;
     tv_out.tv_sec = 0;//�ȴ�10��
     tv_out.tv_usec = 0;
@@ -290,6 +291,8 @@ void * kcp_create_client(unsigned int kcp_fd){
 #endif    //        int on = 1;
     return pkcp;
 }
+
+
 void * kcp_create_server(unsigned int maxClient)
 {
     KCP_Server* kcp_s = (KCP_Server*)malloc(sizeof(KCP_Server));
@@ -325,7 +328,6 @@ int kcp_connect(void * netObject,const char* ip, unsigned int port){
     pkcp->addr.sin_port = htons(port);
     memset((void*)pkcp->addr.sin_zero, 0, sizeof(pkcp->addr.sin_zero));
     
-    
 #if defined(_WIN32)
     WSADATA wsa;
     // WinSock Startup
@@ -333,39 +335,11 @@ int kcp_connect(void * netObject,const char* ip, unsigned int port){
         return 0;
     }
 #endif
-    
-    if (-1 == inet_addr(ip)) {
-        struct hostent *hostinfo;
-        if ((hostinfo = (struct hostent*)gethostbyname(ip)) == NULL) {
-            return 0;
-        }
-        if (hostinfo->h_addrtype == AF_INET && hostinfo->h_addr_list != NULL) {
-#if defined(_WIN32)
-            char ipstr[16];
-            char * ipbyte = *(hostinfo->h_addr_list);
-            sprintf(ipstr, "%d.%d.%d.%d", *ipbyte, *(ipbyte++), *(ipbyte+2), *(ipbyte+3));
-            sock->ip = ipstr;
-#else
-            char ipstr[16];
-            inet_ntop(hostinfo->h_addrtype, *(hostinfo->h_addr_list), ipstr, sizeof(ipstr));
-#endif
-        } else {
-            return 0;
-        }
-    } else {
-        
-    }
-    
-    
-    // create socket
-    
+
     int reuse=1024*1024;
     setsockopt(pkcp->fd , SOL_SOCKET, SO_RCVBUF,(void*)& reuse, sizeof(reuse));
     setsockopt(pkcp->fd , SOL_SOCKET, SO_SNDBUF,(void*)& reuse, sizeof(reuse));
-    
-    
-    //    setsockopt( pkcp->fd ,IPPROTO_UDP, TCP_NODELAY, (void *)&on, sizeof(on));
-    // start thread
+
     ikcp_send(pkcp->kcp, "client_connect", strlen("client_connect"));
 //    ikcp_update(pkcp->kcp, iclock());
     pkcp->state |=CONNECTING;
@@ -399,20 +373,10 @@ int kcp_listen(void * netObject, unsigned int port,int createThread)
 }
 
 
-int kcp_send(void * netObject, const char* buff, unsigned int len){
+int kcp_send(void * netObject, const char* buff, unsigned int len ){
     
     KCP* pkcp = (KCP*)netObject;
-    int head_len =sizeof(Msg_Head);
-    size_t message_raw_len = head_len +len;
-    M_Node* send_node = link_new_node(message_raw_len);
-    ((Msg_Head*)send_node->data_buffer)->len =len;
-    ((Msg_Head*)send_node->data_buffer)->head = '|';
-    ((Msg_Head*)send_node->data_buffer)->msg_type = 10000;
-    ((Msg_Head*)send_node->data_buffer)->session_id =0 ;
-    ((Msg_Head*)send_node->data_buffer)->versions_id=0;//版本
-    ((Msg_Head*)send_node->data_buffer)->SN=0; //顺序号
-    send_node->data_buffer_use =head_len;
-    
+    M_Node* send_node = link_new_node(len);
     link_append_to_node(send_node, buff, len);
     link_push(pkcp->send_link, send_node);
     
@@ -427,6 +391,7 @@ int kcp_send(void * netObject, const char* buff, unsigned int len){
         if ((pkcp->state & SENDDATA) ==0 ) {
             link_append_to_node(node, (const char *)&pkcp, sizeof(KCP*));
             link_push(kcp_s->send_kcp_link, node);
+            pkcp->state |= SENDDATA;
         }
     }
     return 0;

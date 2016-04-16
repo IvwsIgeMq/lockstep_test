@@ -18,6 +18,7 @@ typedef struct node{
     int data_buffer_size;
     int data_buffer_len;
     int data_buffer_use;
+    int data_buffer_pos;
     struct node * next;
     char *data_buffer;
 }M_Node;

@@ -70,8 +70,8 @@ static int l_net_Net(lua_State* L)
 //        kcp_listen(kcp_s, 8010, 1 );
         pNet->netObject = kcp_create_client(0);
         pNet->connect = kcp_connect;
-        pNet->send = kcp_send;
-        pNet->recv = kcp_recv;
+        pNet->send = kcp_client_send;
+        pNet->recv = kcp_client_recv;
         pNet->close = kcp_close;
     }else{
         luaL_error(L, "没有指定联接类型 %s",type);
@@ -135,7 +135,7 @@ static int l_net_recv(lua_State* L)
         return 0;
     }
     pNet->time_ms = now_time_ms;
-    lua_pushlstring(L,node->data_buffer,node->data_buffer_use);
+    lua_pushlstring(L,node->data_buffer+node->data_buffer_pos,node->data_buffer_use-node->data_buffer_pos);
     return 1;
 
 }

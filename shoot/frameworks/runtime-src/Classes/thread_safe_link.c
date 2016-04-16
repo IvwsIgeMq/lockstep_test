@@ -68,6 +68,7 @@ M_Node* link_new_node(int data_len){
     node->data_buffer_size =buff_len;
     node->data_buffer_use = 0;
     node->data_buffer_len = 0;
+    node->data_buffer_pos = 0;
     node->next = NULL;
     ((char*)node)[buff_len]='\0';
     return node;
@@ -90,6 +91,7 @@ void link_reset_node(M_Node* node)
 {
     node->data_buffer_use = 0;
     node->data_buffer_len = 0;
+    node->data_buffer_pos = 0;
     node->next = NULL;
     ((char*)node)[node->data_buffer_size]='\0';
 

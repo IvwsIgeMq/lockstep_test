@@ -113,6 +113,8 @@
 		F641BC821C9A4F4F00EF7F7E /* libpbc Mac.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F641BC811C9A4F0E00EF7F7E /* libpbc Mac.a */; };
 		F641BC831C9A4FD200EF7F7E /* libpbc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F641BC7F1C9A4F0E00EF7F7E /* libpbc.a */; };
 		F641BC911C9A54C500EF7F7E /* libluacocos2d iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F69274E31C9967CA0020BE58 /* libluacocos2d iOS.a */; };
+		F6D4835D1CC21A8000C5430A /* kcp_client.c in Sources */ = {isa = PBXBuildFile; fileRef = F6D4835B1CC21A8000C5430A /* kcp_client.c */; };
+		F6D4835E1CC21A8000C5430A /* kcp_client.c in Sources */ = {isa = PBXBuildFile; fileRef = F6D4835B1CC21A8000C5430A /* kcp_client.c */; };
 		F6F21FCE1CBF6D0900FF476F /* kcp_socket.c in Sources */ = {isa = PBXBuildFile; fileRef = F6F21FCC1CBF6D0900FF476F /* kcp_socket.c */; };
 		F6F21FCF1CBF6D0900FF476F /* kcp_socket.c in Sources */ = {isa = PBXBuildFile; fileRef = F6F21FCC1CBF6D0900FF476F /* kcp_socket.c */; };
 /* End PBXBuildFile section */
@@ -249,7 +251,6 @@
 		045CC6D51CB6A1960061B384 /* ikcp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ikcp.c; path = ../Classes/kpc/ikcp.c; sourceTree = "<group>"; };
 		045CC6D81CB6A1A10061B384 /* ikcp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ikcp.h; path = ../Classes/kpc/ikcp.h; sourceTree = "<group>"; };
 		045CC6D91CB6A1B10061B384 /* Net.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Net.c; path = ../Classes/Net.c; sourceTree = "<group>"; };
-		045CC6DA1CB6A1B10061B384 /* Net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Net.h; path = ../Classes/Net.h; sourceTree = "<group>"; };
 		045CC6DB1CB6A1B10061B384 /* thread_safe_link.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = thread_safe_link.c; path = ../Classes/thread_safe_link.c; sourceTree = "<group>"; };
 		045CC6DC1CB6A1B10061B384 /* thread_safe_link.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = thread_safe_link.h; path = ../Classes/thread_safe_link.h; sourceTree = "<group>"; };
 		04EB89561CB808BE002ADB34 /* tcp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcp.c; path = ../Classes/LuaSocketEvent/tcp.c; sourceTree = "<group>"; };
@@ -331,6 +332,9 @@
 		F293BB7E15EB831F00256477 /* AppDelegate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AppDelegate.cpp; path = ../Classes/AppDelegate.cpp; sourceTree = "<group>"; };
 		F293BB7F15EB831F00256477 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ../Classes/AppDelegate.h; sourceTree = "<group>"; };
 		F641BC791C9A4F0E00EF7F7E /* pbc.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = pbc.xcodeproj; path = "../Classes/pbc-master/pbc.xcodeproj"; sourceTree = "<group>"; };
+		F6D4835B1CC21A8000C5430A /* kcp_client.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = kcp_client.c; sourceTree = "<group>"; };
+		F6D4835C1CC21A8000C5430A /* kcp_client.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kcp_client.h; sourceTree = "<group>"; };
+		F6D483651CC2204700C5430A /* Net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Net.h; path = ../Classes/Net.h; sourceTree = "<group>"; };
 		F6F21FCC1CBF6D0900FF476F /* kcp_socket.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kcp_socket.c; path = ../Classes/kpc/kcp_socket.c; sourceTree = "<group>"; };
 		F6F21FCD1CBF6D0900FF476F /* kcp_socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kcp_socket.h; path = ../Classes/kpc/kcp_socket.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -391,6 +395,8 @@
 				F6F21FCD1CBF6D0900FF476F /* kcp_socket.h */,
 				045CC6D81CB6A1A10061B384 /* ikcp.h */,
 				045CC6D51CB6A1960061B384 /* ikcp.c */,
+				F6D4835B1CC21A8000C5430A /* kcp_client.c */,
+				F6D4835C1CC21A8000C5430A /* kcp_client.h */,
 			);
 			name = kcp;
 			sourceTree = "<group>";
@@ -594,9 +600,9 @@
 		F293BB7C15EB830F00256477 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				F6D483651CC2204700C5430A /* Net.h */,
 				04EB894F1CB80490002ADB34 /* tcp */,
 				045CC6D91CB6A1B10061B384 /* Net.c */,
-				045CC6DA1CB6A1B10061B384 /* Net.h */,
 				045CC6DB1CB6A1B10061B384 /* thread_safe_link.c */,
 				045CC6DC1CB6A1B10061B384 /* thread_safe_link.h */,
 				045CC69F1CB6A1680061B384 /* udt */,
@@ -864,6 +870,7 @@
 				9FF504851A5E87B100AFDA55 /* ConsoleWindowController.m in Sources */,
 				045CC6C01CB6A1880061B384 /* cache.cpp in Sources */,
 				045CC6CC1CB6A1880061B384 /* list.cpp in Sources */,
+				F6D4835E1CC21A8000C5430A /* kcp_client.c in Sources */,
 				045CC6D21CB6A1880061B384 /* queue.cpp in Sources */,
 				045CC6C81CB6A1880061B384 /* core.cpp in Sources */,
 				045CC6C61CB6A1880061B384 /* common.cpp in Sources */,
@@ -888,6 +895,7 @@
 				045CC6D31CB6A1880061B384 /* window.cpp in Sources */,
 				9FC760451A677A4A00D1E6E7 /* SimpleConfigParser.cpp in Sources */,
 				04EB89581CB808BE002ADB34 /* tcp.c in Sources */,
+				F6D4835D1CC21A8000C5430A /* kcp_client.c in Sources */,
 				045CC6C51CB6A1880061B384 /* common.cpp in Sources */,
 				5023812517EBBCAC00990C9B /* RootViewController.mm in Sources */,
 				F293BB9C15EB831F00256477 /* AppDelegate.cpp in Sources */,
