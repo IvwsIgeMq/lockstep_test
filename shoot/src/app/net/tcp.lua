@@ -12,8 +12,8 @@ end
 
 function tcp:connect (args)
    print("create tcp","218.107.220.124", 8010)
-   -- self.sock:connect("218.107.220.124", 8014)
-   self.sock:connect("192.168.3.131",8010)
+  self.sock:connect("192.168.62.180", 8014)
+    -- self.sock:connect("192.168.3.131",8010)
 end
 
 function tcp:update(dt)

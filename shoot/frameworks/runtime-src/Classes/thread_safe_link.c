@@ -52,7 +52,9 @@ M_Node* link_pop(Link* link){
     
     if(node){
         link->front = node->next;
-        if(!link->front) link->rear = link->front;
+        if(!link->front){
+            link->rear = link->front;
+        }
         node->next = NULL;
         link->node_count --;
         link->size -= node->data_buffer_size;
