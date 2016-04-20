@@ -49,6 +49,7 @@ typedef struct {
     Link* recv_link;
     Link* send_link;
     void * kcp_server;
+    IUINT32 update_time;
     int state ;
 }KCP;
 
@@ -58,8 +59,8 @@ typedef struct {
     unsigned int kcp_array_len;
     unsigned int kcp_count;
     int fd;
-    int use_thread;
-    pthread_t thread;
+    char * recv_buff;
+    size_t recv_buff_len;
     struct sockaddr_in addr;
     Link* kcp_link;
     Link* send_kcp_link;
@@ -71,11 +72,13 @@ void * kcp_create_client(unsigned int kcp_fd);
 void * kcp_create_server(unsigned int maxClient);
 
 int kcp_connect(void * netObject,const char* ip, unsigned int port);
-int kcp_listen(void * netObject, unsigned int port ,int createThread);
+int kcp_listen(void * netObject, unsigned int port);
 int kcp_send(void * netObject, const char* buff, unsigned int len);
 M_Node* kcp_recv(void * netObject);
 int kcp_close(void * netObject);
-void* kcp_server_wroker(void * p);
+void kcp_server_update(void * p);
+void kcp_server_send(void * p);
+void* kcp_server_recv(void * p);
 
 
 
