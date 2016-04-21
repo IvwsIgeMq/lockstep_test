@@ -4,7 +4,7 @@ local Net = require("Net")
 local json = require("json")
 function tcp:ctor()
     StartNodeTimer(self, function () self:update() end, 0.0)
-    self.sock = Net.Net("kcp")
+    self.sock = Net.Net("tcp")
     self.onMessage = function () end
     self.rtt  = 0
 end
@@ -13,7 +13,7 @@ end
 function tcp:connect (args)
    print("create tcp","218.107.220.124", 8010)
    --self.sock:connect("192.168.62.180", 8014)
-    self.sock:connect("127.0.0.1",8010)
+    self.sock:connect("192.168.3.131",8010)
 end
 
 function tcp:update(dt)

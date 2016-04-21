@@ -37,21 +37,7 @@ int kcp_client_send(void * netObject, const char* buff, unsigned int len){
     
     link_append_to_node(send_node, buff, len);
     link_push(pkcp->send_link, send_node);
-    
-    if (pkcp->kcp_server) {
-        KCP_Server* kcp_s = (KCP_Server*)pkcp->kcp_server;
-        M_Node* node = NULL;
-        if (kcp_s->free_kcp_link->node_count>0) {
-            node = link_pop(kcp_s->free_kcp_link);
-        }else{
-            node = link_new_node(sizeof(KCP*));
-        }
-        if ((pkcp->state & SENDDATA) ==0 ) {
-            link_append_to_node(node, (const char *)&pkcp, sizeof(KCP*));
-            link_push(kcp_s->send_kcp_link, node);
-            pkcp->state |= SENDDATA;
-        }
-    }
+    pkcp->state |= SENDDATA;
     return 0;
 }
 M_Node* kcp_client_recv(void * netObject){

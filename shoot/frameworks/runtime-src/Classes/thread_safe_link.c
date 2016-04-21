@@ -64,6 +64,7 @@ M_Node* link_pop(Link* link){
 }
 
 M_Node* link_new_node(int data_len){
+    printf("link_new_node len  =%d \n",data_len );
     int buff_len =sizeof(M_Node)+data_len;
     M_Node* node = (M_Node*)malloc(buff_len+1);
     node->data_buffer = ((char*)node)+(buff_len-data_len);

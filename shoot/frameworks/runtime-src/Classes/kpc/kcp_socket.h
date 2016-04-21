@@ -58,14 +58,11 @@ typedef struct {
     KCP** kcp_array;
     unsigned int kcp_array_len;
     unsigned int kcp_count;
+    unsigned int max_kcp_fd;
     int fd;
     char * recv_buff;
     size_t recv_buff_len;
     struct sockaddr_in addr;
-    Link* kcp_link;
-    Link* send_kcp_link;
-    Link* recv_kcp_link;
-    Link* free_kcp_link;
 }KCP_Server;
 
 void * kcp_create_client(unsigned int kcp_fd);
@@ -79,6 +76,7 @@ int kcp_close(void * netObject);
 void kcp_server_update(void * p);
 void kcp_server_send(void * p);
 void* kcp_server_recv(void * p);
+void kcp_free(void * p);
 
 
 

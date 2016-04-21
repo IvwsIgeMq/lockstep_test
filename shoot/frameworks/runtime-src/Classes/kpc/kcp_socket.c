@@ -94,8 +94,7 @@ void* work_thread(void * p)
     char* buff = (char*)malloc(buff_len);
     
     while (1) {
-        usleep(2000);
-        
+        usleep(1000);
         IUINT32 t = iclock();
         ikcp_update(pkcp->kcp, iclock());
         while (pkcp->send_link->node_count) {
@@ -103,6 +102,7 @@ void* work_thread(void * p)
 //            printf("client send %s %d\n",send_node->data_buffer,send_node->data_buffer_use);      
             ikcp_send(pkcp->kcp, send_node->data_buffer, send_node->data_buffer_use);
             ikcp_update(pkcp->kcp, t);
+            link_free_node(send_node);
         }
         pkcp->state ^= SENDDATA;
         while (1) {
@@ -150,39 +150,47 @@ void* work_thread(void * p)
 }
 
 
+
 void kcp_server_update(void * p )
 {
     KCP_Server* kcp_s = (KCP_Server*)p;
     IUINT32 t = iclock();
     IUINT32 t_update = 0;
-    M_Node* kcp_node = kcp_s->kcp_link->front;
-    while (kcp_node) {
-        KCP* pkcp  = *((KCP**)kcp_node->data_buffer);
-        if (t>= pkcp->update_time) {
-            ikcp_update(pkcp->kcp, t);
-            pkcp->update_time = ikcp_check(pkcp->kcp, t);
-            if (pkcp->kcp->state< 0 ) {
-                printf("超过重发限制认为断开\n");
+    int kcp_fd = 0;
+    for (kcp_fd = 1; kcp_fd< kcp_s->kcp_array_len; kcp_fd++) {
+        if (kcp_s->kcp_array[kcp_fd])
+        {   KCP* pkcp =kcp_s->kcp_array[kcp_fd];
+            if (t>= pkcp->update_time) {
+                ikcp_update(pkcp->kcp, t);
+                pkcp->update_time = ikcp_check(pkcp->kcp, t);
+                if (pkcp->kcp->state !=0 ) {
+                   
+                    kcp_free(pkcp);
+                    kcp_s->kcp_array[kcp_fd] = NULL;
+                    printf("超过重发限制认为断开\n");
+                }
             }
         }
-        kcp_node = kcp_node->next;
     }
 
 }
 
 void kcp_server_send(void * p)
 {
+//    printf("kcp_server_send\n");
     KCP_Server* kcp_s = (KCP_Server*)p;
-    while (kcp_s->send_kcp_link->node_count) {
-        M_Node* kcp_node = link_pop(kcp_s->send_kcp_link);
-        KCP* pkcp  = *((KCP**)kcp_node->data_buffer);
-        while (pkcp->send_link->node_count) {
-            M_Node* send_node = link_pop(pkcp->send_link);
-            ikcp_send(pkcp->kcp, send_node->data_buffer, send_node->data_buffer_use);
-            pkcp->update_time = ikcp_check(pkcp->kcp, iclock());
+    int kcp_fd = 0;
+    for (kcp_fd = 1; kcp_fd< kcp_s->kcp_array_len; kcp_fd++) {
+        if (kcp_s->kcp_array[kcp_fd])
+        {   KCP* pkcp =kcp_s->kcp_array[kcp_fd];
+            while (pkcp->send_link->node_count) {
+                M_Node* send_node = link_pop(pkcp->send_link);
+                ikcp_send(pkcp->kcp, send_node->data_buffer, send_node->data_buffer_use);
+                pkcp->update_time = ikcp_check(pkcp->kcp, iclock());
+                link_free_node(send_node);
+            }
+            pkcp->state ^= SENDDATA;
         }
-        pkcp->state ^= SENDDATA;
-        link_push(kcp_s->free_kcp_link, kcp_node);
     }
 }
 
@@ -211,57 +219,45 @@ void* kcp_server_recv(void * p)
                     break;
                 }
             }
+            if (kcp_fd > kcp_s->max_kcp_fd) {
+                kcp_s->max_kcp_fd = kcp_fd;
+            }
             pkcp=(KCP*)kcp_create_client(kcp_fd);
             pkcp->kcp_server = kcp_s;
             pkcp->fd = kcp_s->fd;
             memcpy(&pkcp->addr, &client_addr, addr_len);
             ikcp_send(pkcp->kcp, "server_connect", sizeof("server_connect"));
             kcp_s->kcp_array[kcp_fd] = pkcp;
-            if (kcp_s->free_kcp_link->node_count>0) {
-                node = link_pop(kcp_s->free_kcp_link);
-            }else{
-                node = link_new_node(sizeof(KCP*));
-            }
-            link_append_to_node(node, (const char *)&pkcp, sizeof(KCP*));
-            link_push(kcp_s->kcp_link, node);
             *((unsigned int *)(kcp_s->recv_buff)) = kcp_fd;
             printf("创建新联接 kcp_fd =%d \n",kcp_fd);
             pkcp->state |= CONNECTED;
             pkcp->state ^= CONNECTING;
            
         }
-       
-        if (kcp_s->free_kcp_link->node_count>0) {
-            node = link_pop(kcp_s->free_kcp_link);
-        }else{
-            node = link_new_node(sizeof(KCP*));
-        }
-        if ((pkcp->state & KCPRECV) == 0) {
-            printf("add client to recv recv_kcp_link  %d\n",kcp_fd);
-            link_append_to_node(node, (const char *)&pkcp, sizeof(KCP*));
-            link_push(kcp_s->recv_kcp_link, node);
-            pkcp->state |= KCPRECV;
-        }
+        pkcp->state |= KCPRECV;
         ikcp_input(pkcp->kcp, kcp_s->recv_buff , recv_len);
         pkcp->update_time = ikcp_check(pkcp->kcp, iclock());
     }
     int hr  = 0;
-    kcp_node = kcp_s->recv_kcp_link->front;
-    while (kcp_node) {
-        KCP* pkcp  = *((KCP**)kcp_node->data_buffer);
-        while (1) {
-            hr = ikcp_recv(pkcp->kcp,kcp_s->recv_buff, kcp_s->recv_buff_len);
-            if (hr<0) {
-                break;
+    
+    int kcp_fd = 0;
+    for (kcp_fd = 1; kcp_fd< kcp_s->kcp_array_len; kcp_fd++) {
+        if (kcp_s->kcp_array[kcp_fd])
+        {   KCP* pkcp =kcp_s->kcp_array[kcp_fd];
+            while (1) {
+                hr = ikcp_recv(pkcp->kcp,kcp_s->recv_buff, kcp_s->recv_buff_len);
+                if (hr<0) {
+                    break;
+                }
+                printf("server recv %s\n",kcp_s->recv_buff);
+                M_Node* recv_node = link_new_node(hr);
+                link_append_to_node(recv_node, kcp_s->recv_buff, hr);
+                link_push(pkcp->recv_link, recv_node);
             }
-            printf("server recv %s\n",kcp_s->recv_buff);
-            M_Node* recv_node = link_new_node(hr);
-            link_append_to_node(recv_node, kcp_s->recv_buff, hr);
-            link_push(pkcp->recv_link, recv_node);
+            pkcp->state ^= KCPRECV;
+            pkcp->state |= RECVDATA;
+
         }
-        pkcp->state ^= KCPRECV;
-        pkcp->state |= RECVDATA;
-        kcp_node = kcp_node->next;
     }
     return NULL;
 }
@@ -304,6 +300,17 @@ void * kcp_create_client(unsigned int kcp_fd){
     return pkcp;
 }
 
+void kcp_free(void * p)
+{
+    KCP* pkcp = (KCP*)p;
+    if (pkcp) {
+        link_free(pkcp->send_link);
+        link_free(pkcp->recv_link);
+        ikcp_release(pkcp->kcp);
+        pkcp->kcp_server = 0;
+        free(pkcp);
+    }
+}
 
 void * kcp_create_server(unsigned int maxClient)
 {
@@ -312,10 +319,6 @@ void * kcp_create_server(unsigned int maxClient)
     kcp_s->kcp_array = (KCP**)malloc(sizeof(KCP*)*maxClient);
     kcp_s->kcp_count = 0;
     memset(kcp_s->kcp_array, 0,sizeof(KCP*)*maxClient);
-    kcp_s->send_kcp_link = link_new(1);
-    kcp_s->recv_kcp_link = link_new(1);
-    kcp_s->free_kcp_link = link_new(0);
-    kcp_s->kcp_link = link_new(0);
     kcp_s->recv_buff = (char*)malloc(2048);
     kcp_s->recv_buff_len = 2048;
     struct timeval tv_out;
@@ -386,20 +389,20 @@ int kcp_send(void * netObject, const char* buff, unsigned int len ){
     link_append_to_node(send_node, buff, len);
     link_push(pkcp->send_link, send_node);
     
-    if (pkcp->kcp_server) {
-        KCP_Server* kcp_s = (KCP_Server*)pkcp->kcp_server;
-        M_Node* node = NULL;
-        if (kcp_s->free_kcp_link->node_count>0) {
-            node = link_pop(kcp_s->free_kcp_link);
-        }else{
-            node = link_new_node(sizeof(KCP*));
-        }
-        if ((pkcp->state & SENDDATA) ==0 ) {
-            link_append_to_node(node, (const char *)&pkcp, sizeof(KCP*));
-            link_push(kcp_s->send_kcp_link, node);
-            pkcp->state |= SENDDATA;
-        }
-    }
+//    if (pkcp->kcp_server) {
+//        KCP_Server* kcp_s = (KCP_Server*)pkcp->kcp_server;
+//        M_Node* node = NULL;
+//        if (kcp_s->free_kcp_link->node_count>0) {
+//            node = link_pop(kcp_s->free_kcp_link);
+//        }else{
+//            node = link_new_node(sizeof(KCP*));
+//        }
+//        if ((pkcp->state & SENDDATA) ==0 ) {
+//            link_append_to_node(node, (const char *)&pkcp, sizeof(KCP*));
+//            link_push(kcp_s->send_kcp_link, node);
+//            pkcp->state |= SENDDATA;
+//        }
+//    }
     return 0;
 }
 M_Node* kcp_recv(void * netObject){
