@@ -60,18 +60,18 @@ static inline IUINT32 iclock()
 }
 
 /* sleep in millisecond */
-static inline void isleep(unsigned long millisecond)
-{
-#ifdef __unix 	/* usleep( time * 1000 ); */
-    struct timespec ts;
-    ts.tv_sec = (time_t)(millisecond / 1000);
-    ts.tv_nsec = (long)((millisecond % 1000) * 1000000);
-    /*nanosleep(&ts, NULL);*/
-    usleep((millisecond << 10) - (millisecond << 4) - (millisecond << 3));
-#elif defined(_WIN32)
-    Sleep(millisecond);
-#endif
-}
+//static inline void isleep(unsigned long millisecond)
+//{
+//#ifdef __unix 	/* usleep( time * 1000 ); */
+//    struct timespec ts;
+//    ts.tv_sec = (time_t)(millisecond / 1000);
+//    ts.tv_nsec = (long)((millisecond % 1000) * 1000000);
+//    /*nanosleep(&ts, NULL);*/
+//    usleep((millisecond << 10) - (millisecond << 4) - (millisecond << 3));
+//#elif defined(_WIN32)
+//    Sleep(millisecond);
+//#endif
+//}
 void* work_thread(void * pkcp);
 int udp_output(const char *buf, int len, ikcpcb *kcp, void *user);
 
@@ -199,19 +199,16 @@ void kcp_server_send(void * p)
 void* kcp_server_recv(void * p)
 {
     KCP_Server* kcp_s = (KCP_Server*)p;
-    M_Node* kcp_node = NULL;
     struct sockaddr_in client_addr;
-    unsigned int addr_len =sizeof(client_addr);
+    socklen_t addr_len =sizeof(client_addr);
     while (1) {
-        unsigned int addr_len =sizeof(kcp_s->addr);
-        int recv_len = recvfrom(kcp_s->fd, kcp_s->recv_buff, kcp_s->recv_buff_len, 0, (struct sockaddr*)&client_addr, &addr_len);
+        ssize_t recv_len = recvfrom(kcp_s->fd, kcp_s->recv_buff, kcp_s->recv_buff_len, 0, (struct sockaddr*)&client_addr, &addr_len);
         if (recv_len <0) {
             break;
         }
-        printf("server recv_len = %d\n",recv_len);
+        printf("server recv_len = %ld\n",recv_len);
         unsigned int kcp_fd = *((unsigned int *)(kcp_s->recv_buff));
         KCP * pkcp =kcp_s->kcp_array[kcp_fd];
-         M_Node* node = NULL;
         if (!pkcp) {
             for (kcp_fd = 1; kcp_fd< kcp_s->kcp_array_len; kcp_fd++) {
                 if (!kcp_s->kcp_array[kcp_fd])
