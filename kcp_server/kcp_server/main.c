@@ -48,7 +48,7 @@ int main(int argc, const char * argv[]) {
     pthread_t thread;
     KCP_Server* kcp_s = (KCP_Server*)kcp_create_server(500);
     kcp_listen(kcp_s, 8010);
-    
+    printf("runing kcp_server\n");
     pthread_create(&thread, NULL, _work_thread, kcp_s);
     
     while (1) {

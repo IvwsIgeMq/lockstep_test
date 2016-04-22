@@ -219,11 +219,20 @@ void* kcp_server_recv(void * p)
             if (kcp_fd > kcp_s->max_kcp_fd) {
                 kcp_s->max_kcp_fd = kcp_fd;
             }
-            pkcp=(KCP*)kcp_create_client(kcp_fd);
+            pkcp=(KCP*)kcp_create_client(kcp_fd); 
             pkcp->kcp_server = kcp_s;
-            pkcp->fd = kcp_s->fd;
+            struct sockaddr_in addr;
+            socklen_t addr_len;
+            char ipaddress[32];
+            getsockname(pkcp->fd, (struct sockaddr*)&addr,&addr_len);
+            inet_ntop(addr.sin_family, &addr.sin_addr, ipaddress, 32);
+            printf("新建socket %s\n",ipaddress);
+            int err = connect(pkcp->fd, (struct sockaddr*)&client_addr , sizeof(client_addr));
+            
+            perror("connect");
             memcpy(&pkcp->addr, &client_addr, addr_len);
             ikcp_send(pkcp->kcp, "server_connect", sizeof("server_connect"));
+            
             kcp_s->kcp_array[kcp_fd] = pkcp;
             *((unsigned int *)(kcp_s->recv_buff)) = kcp_fd;
             printf("创建新联接 kcp_fd =%d \n",kcp_fd);
