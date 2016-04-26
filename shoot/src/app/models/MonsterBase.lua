@@ -116,12 +116,23 @@ function MonsterBase:createPhysicsBody(w,h,m)
 	body:setVelocity(cc.p(0,0))
 	body:setRotationEnable(false)
 	self.shadow = cc.Node:create()
-    self.shadow:setPosition(cc.p(self:getPosition()))
+   self.shadow:setPosition(cc.p(self:getPosition()))
+	self.shadowTarget = cc.Node:create()
+	self.shadowTarget:setPosition(cc.p(self:getPosition()))
+	self.shadowFrom = cc.Node:create()
+	self.shadowFrom:setPosition(cc.p(self:getPosition()))
 	self:setPhysicsBody(body)
 	self.body = body
 	self:setPhysicsBitType()
 end
 
+
+function MonsterBase:addTo(node,level)
+		node:addChild(self,level)
+		node:addChild(self.shadow,level)
+		node:addChild(self.shadowTarget,level)
+		node:addChild(self.shadowFrom,level)
+end
 -------------------------------------------------
 -- 设置刚体3个码
 -------------------------------------------------

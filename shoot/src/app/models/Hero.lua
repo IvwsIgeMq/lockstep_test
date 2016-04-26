@@ -47,6 +47,7 @@ function Hero:ctor(pos)
 	self.nextLogicPos = pos
 	self.command_list ={}
    self.update_num = 0
+   self.is_logic_update = false
 
 
 --   self.shadow:setScale(0.5)
@@ -69,6 +70,7 @@ function Hero:doCommand(world,forwardTime,logic_frame)
     if not self.command_list[logic_frame] then
       return
     end
+   --  print("logging hero doCommand",self.command_list[logic_frame])
     for key, var in pairs(self.command_list[logic_frame]) do
          -- if not self.isPlayer then
          --    self:setPosition(var.pos)
@@ -96,16 +98,23 @@ function Hero:doCommand(world,forwardTime,logic_frame)
             self:setAttacking(false)
         end
     end
+    self.is_logic_update = true
    --  print("HERO docommand")
     self.command_list[logic_frame]= {}
 end
 
 function Hero:logicUpdate (forwardTime)
 
+   if not self.is_logic_update then
+      return
+   end
    local logicPos =  cc.p(self:getPosition())
-   local viewPos = cc.p(self.shadow:getPosition())
+   -- print("logging",logicPos.x,logicPos.y)
+   self.shadowTarget:setPosition(logicPos);
+   self.shadowFrom:setPosition(cc.p(self.shadow:getPosition()));
    -- if cc.pDistanceSQ(logicPos,viewPos)> 1 then
-      self.update_num = math.ceil(forwardTime/(1/60))
+   self.update_num = math.ceil(forwardTime/(1/60))
+   -- print("self.update_num",self.update_num,forwardTime,(1/60))
    -- end
    -- print("logicUpdate",logicPos.x ,logicPos.y)
    if self.attacking then
@@ -129,9 +138,8 @@ function Hero:logicUpdate (forwardTime)
          end
       end
    end
-
+   self.is_logic_update  = false
 end
-
 
 function Hero:stopPhysics()
    self.velocity = self:getPhysicsBody():getVelocity()
@@ -162,9 +170,14 @@ end
 
 function Hero:update()
    if self.update_num >0  then
+
       local viewPos= cc.p(self.shadow:getPosition())
       local logicPos = cc.p(self:getPosition())
+
+
       local pos = cc.pLerp(viewPos,logicPos,1/self.update_num)
+      -- print("po",self.update_num,pos.x ,pos.y)
+
       self.shadow:setPosition(pos)
       self.update_num =self.update_num -1
       self.gameView:followHero()

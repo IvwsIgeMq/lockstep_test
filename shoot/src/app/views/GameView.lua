@@ -48,6 +48,25 @@ function GameView:ctor(tcp)
 end
 
 
+function GameView:doCommand(world,forwardTime,logic_frame)
+	for key, hero in pairs(self.heroList) do
+        hero:doCommand(world,forwardTime,logic_frame)
+	end
+   world:step(0)
+   world:step(forwardTime)
+   self:visit()
+   for key, hero in pairs(self.heroList) do
+      hero:stopPhysics()
+   end
+end
+
+function GameView:sendCommands ()
+   for k,v in pairs(self.sendCommand) do
+      self.tcp:sendMessage(k,v)
+   end
+   self.sendCommand = {}
+end
+
 function GameView:updateLogic (world,forwardTime,logic_frame)
   math.randomseed(logic_frame)
    self:doCommand(world,forwardTime,logic_frame)
@@ -58,29 +77,31 @@ function GameView:updateLogic (world,forwardTime,logic_frame)
    world:step(0) --让 node 位置更新物理对象
    self:visit()
    for k,hero in pairs(self.heroList) do
-      hero:logicUpdate(forwardTime)
+      hero:logicUpdate(forwardTime+self.tcp.rttvalue)
    end
    for k,monster in pairs(self.monsters) do
       monster:logicUpdate(forwardTime)
    end
-
 end
 
 function GameView:viewUpdate (dt,world,forwardTime)
    if self.interval >=forwardTime then
       local key = table.remove(self.serverFrameKeyLIst,1)
       local len = #self.serverFrameKeyLIst
+
       if key  then
+         print("serverFrameKeyLIst" ,len)
          self:updateLogic(world,forwardTime,key)
-         self.keyLen = math.ceil(self.tcp.rtt/forwardTime)
-         -- print("self.keyLen",self.keyLen,self.tcp.rtt)
-         if len > self.keyLen  then
-            self.interval = self.interval -forwardTime
-            self.keyLen = 0
-         else
-            self.interval  = 0
-         end
-         table.insert(self.viewFrameKeyList,key)
+
+         -- self.keyLen = math.ceil(self.tcp.rtt/forwardTime)
+         -- -- print("self.keyLen",self.keyLen,self.tcp.rtt)
+         -- if len > self.keyLen  then
+         --    self.interval = self.interval -forwardTime
+         --    self.keyLen = 0
+         -- else
+         --    self.interval  = 0
+         -- end
+         -- table.insert(self.viewFrameKeyList,key)
       end
       self:sendCommands()
 
@@ -131,9 +152,7 @@ function GameView:addHero(info)
       return
      end
     local hero = Hero:create(self.map:getBirthPos())
-
-    self:addChild(hero,4)
-    self:addChild(hero.shadow,4)
+    hero:addTo(self,4)
     if not self.hero  then
         self.hero = hero
         hero.isPlayer = true
@@ -159,24 +178,6 @@ function GameView:makeSnapshot(logic_frame)
       table.insert(info.monsters,{ID =k,snapshot = snapshot})
    end
    return info
-end
-function GameView:doCommand(world,forwardTime,logic_frame)
-	for key, hero in pairs(self.heroList) do
-        hero:doCommand(world,forwardTime,logic_frame)
-	end
-   world:step(0)
-   world:step(forwardTime)
-   self:visit()
-   for key, hero in pairs(self.heroList) do
-      hero:stopPhysics()
-   end
-end
-
-function GameView:sendCommands ()
-   for k,v in pairs(self.sendCommand) do
-      self.tcp:sendMessage(k,v)
-   end
-   self.sendCommand = {}
 end
 
 

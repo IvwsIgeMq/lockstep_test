@@ -63,7 +63,7 @@ function MainScene:showWithScene(transition, time, more)
             gameView.sendCommand[type] = {JoystickWithAngle.m_angle,JoystickWithAngle.m_length}
     end)
 
-    self.forwardTime = 0.03
+    self.forwardTime = 0.06
     self.logic_frame = 1
     self.view_frame = 1
     self.command_list ={}
@@ -76,14 +76,19 @@ function MainScene:showWithScene(transition, time, more)
            if not self.syncOK then
              return
            end
-            -- local tt =  socket.gettime()
-            -- print("tick",tt- self.last_time)
-            -- self.last_time = tt
+            local tt =  socket.gettime()
+            -- print("self.tcp.rttvalue= ",self.tcp.rttvalue,"self.tcp.rttvalue*3",self.tcp.rttvalue*3,"tt- self.last_time =" ,tt- self.last_time ,"(tt- self.last_time -0.06))",(tt- self.last_time -0.06))
+            self.tcp.rttvalue  = (self.tcp.rttvalue*3+(tt- self.last_time -0.06))/4
+            -- if self.tcp.rttvalue < tt- self.last_time -0.06 then
+            --    self.tcp.rttvalue = tt- self.last_time -0.06
+            -- end
+            print("tick",tt- self.last_time)
+               self.last_time = tt
 
             table.insert(gameView.serverFrameKeyLIst,self.logic_frame)
             -- gameView:updateLogic(self.world,self.forwardTime,self.logic_frame)
             self.logic_frame = self.logic_frame +1
-            self.tcp:sendMessage(-100,{time = socket.gettime()})
+            -- self.tcp:sendMessage(-100,{time = socket.gettime()})
         elseif info.type == 0 then -- 创建自身
             self.logic_frame = info.logic_frame
             self.ID = info.ID
@@ -111,10 +116,14 @@ function MainScene:showWithScene(transition, time, more)
 
            local now = socket.gettime()
            local rtt =  now - info.data.time
+           if sef.tcp.rttvalue <  (rtt -self.tcp.rtt ) then
+             sef.tcp.rttvalue =  (rtt -self.tcp.rtt )
+          end
            self.tcp.rtt = (self.tcp.rtt +rtt)/2
-           print("rtt",self.tcp.rtt)
+
 
         else
+         --   print(data)
             local hero = gameView:getHero(info.ID)
             hero:addCommand(info,self.logic_frame )
         end
