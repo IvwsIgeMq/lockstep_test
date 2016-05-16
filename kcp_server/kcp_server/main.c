@@ -10,7 +10,8 @@
 #include <pthread.h>
 #include <unistd.h>
 #include "kcp_socket.h"
-
+#include <sys/time.h>
+#include <signal.h>
 
 void * _work_thread(void * p)
 {
@@ -58,7 +59,7 @@ int main(int argc, const char * argv[]) {
         kcp_server_update(kcp_s);
         
     }
-    
-    
+//    timer_create();
+    time_t
     return 0;
 }

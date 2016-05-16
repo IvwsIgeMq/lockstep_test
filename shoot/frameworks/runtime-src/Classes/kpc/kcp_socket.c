@@ -96,7 +96,6 @@ void* work_thread(void * p)
     while (1) {
         usleep(1000);
         IUINT32 t = iclock();
-        ikcp_update(pkcp->kcp, iclock());
         while (pkcp->send_link->node_count) {
             M_Node* send_node = link_pop(pkcp->send_link);
 //            printf("client send %s %d\n",send_node->data_buffer,send_node->data_buffer_use);      
@@ -144,7 +143,10 @@ void* work_thread(void * p)
             link_append_to_node(recv_node, buff, hr);
             link_push(pkcp->recv_link, recv_node);
         }
+        ikcp_update(pkcp->kcp, iclock());
+
     }
+    
     free(buff);
     return NULL;
 }

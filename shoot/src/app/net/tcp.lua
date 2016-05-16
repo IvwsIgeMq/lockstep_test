@@ -8,17 +8,21 @@ function tcp:ctor()
     self.onMessage = function () end
     self.rtt  = 0
     self.rttvalue = 0.00 --波动值最大值
+    self.last_time = 0
 end
 
 
 function tcp:connect (args)
    print("create tcp","218.107.220.124", 8010)
    --self.sock:connect("192.168.62.180", 8014)
-    self.sock:connect("192.168.3.124",8010)
+    self.sock:connect("192.168.43.227",8010)
 end
 
 function tcp:update(dt)
+   local tt =  socket.gettime()
    local data =self.sock:recv()
+   -- print("tcp update",(tt- self.last_time)*1000,data)
+   self.last_time = tt
    while data  do
       --  print("data",data)
       if data == 'connected' then

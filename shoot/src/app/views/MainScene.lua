@@ -71,21 +71,29 @@ function MainScene:showWithScene(transition, time, more)
     t.onMessage = function(data)
         local json = require("json")
         local info = json.decode(data)
-
+      --   print("data",data)
         if info.type == 1  then
            if not self.syncOK then
              return
            end
             local tt =  socket.gettime()
             -- print("self.tcp.rttvalue= ",self.tcp.rttvalue,"self.tcp.rttvalue*3",self.tcp.rttvalue*3,"tt- self.last_time =" ,tt- self.last_time ,"(tt- self.last_time -0.06))",(tt- self.last_time -0.06))
-            self.tcp.rttvalue  = (self.tcp.rttvalue*3+(tt- self.last_time -0.06))/4
+            -- self.tcp.rttvalue  = (self.tcp.rttvalue*3+(tt- self.last_time -0.06))/4
             -- if self.tcp.rttvalue < tt- self.last_time -0.06 then
             --    self.tcp.rttvalue = tt- self.last_time -0.06
             -- end
-            print("tick",tt- self.last_time)
+            print("tick",(tt- self.last_time)*1000)
                self.last_time = tt
-
-            table.insert(gameView.serverFrameKeyLIst,self.logic_frame)
+            local time = 0
+            local len = #gameView.serverFrameKeyLIst
+            if len <= 1 then
+                  time = tt+0.1
+            elseif len <10 then
+               time = gameView.serverFrameKeyLIst[#gameView.serverFrameKeyLIst].time +self.forwardTime
+            else
+               time = gameView.serverFrameKeyLIst[#gameView.serverFrameKeyLIst].time
+            end
+            table.insert(gameView.serverFrameKeyLIst,{time =time ,frame = self.logic_frame})
             -- gameView:updateLogic(self.world,self.forwardTime,self.logic_frame)
             self.logic_frame = self.logic_frame +1
             -- self.tcp:sendMessage(-100,{time = socket.gettime()})

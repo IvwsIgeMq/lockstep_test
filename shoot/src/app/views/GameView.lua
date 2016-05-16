@@ -85,28 +85,15 @@ function GameView:updateLogic (world,forwardTime,logic_frame)
 end
 
 function GameView:viewUpdate (dt,world,forwardTime)
-   if self.interval >=forwardTime then
-      local key = table.remove(self.serverFrameKeyLIst,1)
+   local tt =  socket.gettime()
+   local key = self.serverFrameKeyLIst[1]
+   if key and tt >key.time then
+      table.remove(self.serverFrameKeyLIst,1)
       local len = #self.serverFrameKeyLIst
-
-      if key  then
          print("serverFrameKeyLIst" ,len)
-         self:updateLogic(world,forwardTime,key)
-
-         -- self.keyLen = math.ceil(self.tcp.rtt/forwardTime)
-         -- -- print("self.keyLen",self.keyLen,self.tcp.rtt)
-         -- if len > self.keyLen  then
-         --    self.interval = self.interval -forwardTime
-         --    self.keyLen = 0
-         -- else
-         --    self.interval  = 0
-         -- end
-         -- table.insert(self.viewFrameKeyList,key)
-      end
+      self:updateLogic(world,forwardTime,key.frame)
       self:sendCommands()
-
    end
-   self.interval  = self.interval +dt
 end
 
 

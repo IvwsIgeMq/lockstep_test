@@ -40,6 +40,73 @@ static inline void itimeofday(long *sec, long *usec)
 #endif
 }
 
+
+
+
+int net_create(Net* pNet,const char* type)
+{
+    if (!pNet || !type) {
+        return 0;
+    }
+    if (strcmp(type , "tcp") == 0) {
+        pNet->netObject = socketevent_tcp();
+        pNet->connect = socketevent_tcp_connect;
+        pNet->send = socketevent_tcp_send_message;
+        pNet->recv = socketevent_recv;
+        pNet->close = socketevent_tcp_close;
+        
+    }else if (strcmp(type , "udt")== 0 ) {
+        
+    }else if (strcmp(type, "kcp")==0){
+        //        void *kcp_s =kcp_create_server(10);
+        //        kcp_listen(kcp_s, 8010, 1 );
+        pNet->netObject = kcp_create_client(0);
+        pNet->connect = kcp_connect;
+        pNet->send = kcp_client_send;
+        pNet->recv = kcp_client_recv;
+        pNet->close = kcp_close;
+    }else{
+        return 0;
+    }
+    memcpy(pNet->netType,type,strlen(type));
+    return 1;
+}
+
+
+int net_connect(Net* pNet,const char* ip, int port)
+{
+    if (!pNet|| !ip || port <= 0) {
+        return 0 ;
+    }
+     pNet->connect(pNet->netObject,ip,port);
+    return 1;
+}
+
+
+
+
+int net_send(Net* pNet,const char* buff, unsigned int len)
+{
+    if (!pNet || !buff|| len<=0) {
+        return 0;
+    }
+    pNet->send(pNet->netObject,buff,len);
+    return 1 ;
+}
+
+M_Node* net_recv(Net* pNet)
+{
+    M_Node* node = pNet->recv(pNet->netObject);
+    return node;
+}
+
+
+void net_close(Net* pNet)
+{
+    pNet->close(pNet->netObject);
+}
+
+
 static int l_net_Net(lua_State* L)
 {
     int argc = lua_gettop(L);
@@ -55,29 +122,11 @@ static int l_net_Net(lua_State* L)
 #else
     luaL_setmetatable(L, NetLib);
 #endif
-    
-    if (strcmp(type , "tcp") == 0) {
-        pNet->netObject = socketevent_tcp();
-        pNet->connect = socketevent_tcp_connect;
-        pNet->send = socketevent_tcp_send_message;
-        pNet->recv = socketevent_recv;
-        pNet->close = socketevent_tcp_close;
-        
-    }else if (strcmp(type , "udt")== 0 ) {
-    
-    }else if (strcmp(type, "kcp")==0){
-//        void *kcp_s =kcp_create_server(10);
-//        kcp_listen(kcp_s, 8010, 1 );
-        pNet->netObject = kcp_create_client(0);
-        pNet->connect = kcp_connect;
-        pNet->send = kcp_client_send;
-        pNet->recv = kcp_client_recv;
-        pNet->close = kcp_close;
-    }else{
-        luaL_error(L, "没有指定联接类型 %s",type);
-        return 0;
+    if(net_create(pNet,type)== 0)
+    {
+        luaL_error(L, "创建net 对象出错 类型不匹配");
+
     }
-    memcpy(pNet->netType,type,strlen(type));
     return 1;
 }
 static int l_net_setopt(lua_State* L)
@@ -94,20 +143,21 @@ static int l_net_connect(lua_State* L)
     Net* pNet = (Net*)luaL_checkudata(L, 1, "Net*");
     const char *ip = luaL_checkstring(L, 2);
     lua_Integer port = luaL_checkinteger(L, 3);
-    pNet->connect(pNet->netObject,ip,port);
+    net_connect(pNet,ip,port);
     return 0;
 }
 static int l_net_send(lua_State* L)
 {
     int argc = lua_gettop(L);
     if (argc <2 ) {
-        luaL_error(L, "net.connect 参数个数不对 net.connect(type,ip,port)");
+        luaL_error(L, "net.send 参数个数不对 net.send(buff)");
         return 0;
     }
     Net* pNet = (Net*)luaL_checkudata(L, 1, "Net*");
     unsigned int len = lua_strlen(L, 2);
     const char*  buff = luaL_checkstring(L, 2);
-    pNet->send(pNet->netObject,buff,len);
+    if(net_send(pNet, buff, len)==0)
+        luaL_error(L, "net_send 参数为空");
     return 0;
 
 }
@@ -124,17 +174,17 @@ static int l_net_recv(lua_State* L)
     if (argc ==2){
         interval_ms = luaL_checkinteger(L, 2);
     }
-    long now_sec,now_usec;
-    itimeofday(&now_sec,&now_usec);
-    long long now_time_ms = ((long long)now_sec) * 1000 + (now_usec / 1000);
-    if((now_time_ms-pNet->time_ms )< interval_ms)
-        return 0;
+//    long now_sec,now_usec;
+//    itimeofday(&now_sec,&now_usec);
+//    long long now_time_ms = ((long long)now_sec) * 1000 + (now_usec / 1000);
+//    if((now_time_ms-pNet->time_ms )< interval_ms)
+//        return 0;
 
-    M_Node* node = pNet->recv(pNet->netObject);
+    M_Node* node = net_recv(pNet);
     if (!node) {
         return 0;
     }
-    pNet->time_ms = now_time_ms;
+//    pNet->time_ms = now_time_ms;
     lua_pushlstring(L,node->data_buffer+node->data_buffer_pos,node->data_buffer_use-node->data_buffer_pos);
     return 1;
 
@@ -147,13 +197,13 @@ static int l_net_close(lua_State* L)
         return 0;
     }
     Net* pNet = (Net*)luaL_checkudata(L, 1, "Net*");
-    pNet->close(pNet->netObject);
+    net_close(pNet);
     return 0;
 }
 static int l_net_gc(lua_State* L)
 {
     Net* pNet = (Net*)luaL_checkudata(L, 1, "Net*");
-    pNet->close(pNet->netObject);
+    net_close(pNet);
     return 0;
 }
 static int l_net_tostring(lua_State* L)
